@@ -1,0 +1,35 @@
+<%= link_to "Trainers", trainers_path, class: "btn btn-primary" %>
+
+<div class="pokedex">
+  <h1 class="pokedex__title">Pokédex</h1>
+
+  <ul class="pokedex__grid">
+    <% @pokemons.each do |pokemon| %>
+      <li>
+        <%= link_to pokemon_path(pokemon), class: "pokedex-card pokedex-card--link" do %>
+          <div class="pokedex-card__row">
+            <% if pokemon.photo.attached? %>
+              <%= cl_image_tag(
+                    pokemon.photo.key,
+                    width: 96, height: 96, crop: :fill, gravity: :auto,
+                    fetch_format: :auto, quality: "auto",
+                    class: "pokedex-card__img", alt: pokemon.name
+                  ) %>
+            <% end %>
+
+            <div>
+              <% if pokemon.pokeball%>
+                <p class="pokedex-card__name"><%= pokemon.name %>😀</p>
+              <% else %>
+                <p class="pokedex-card__name"><%= pokemon.name %></p>
+              <% end %>
+              <small class="pokedex-card__type"><%= pokemon.element_type %></small>
+            </div>
+          </div>
+
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+
+</div>

@@ -1,0 +1,88 @@
+<div class="pokemon-show">
+  <div class="pokemon-show__actions">
+    <%= link_to "Zurück zum Pokédex", root_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="pokemon-show__layout">
+    <!-- LEFT: Pokémon-Info -->
+    <section class="pokemon-show__left">
+      <div class="pokemon-card">
+        <div class="pokemon-card__media">
+          <% if @pokemon.photo.attached? %>
+            <%= cl_image_tag(
+                  @pokemon.photo.key,
+                  width: 256, height: 256, crop: :fill, gravity: :auto,
+                  fetch_format: :auto, quality: "auto",
+                  class: "pokemon-card__img", alt: @pokemon.name
+                ) %>
+          <% else %>
+            <div class="pokemon-card__img pokemon-card__img--placeholder" aria-hidden="true">❓</div>
+          <% end %>
+        </div>
+
+        <div class="pokemon-card__body">
+          <h1 class="pokemon-card__title"><%= @pokemon.name %></h1>
+          <p class="pokemon-card__type">
+            Element: <span><%= @pokemon.element_type %></span>
+          </p>
+
+          <% if @pokemon.pokeball %>
+            <% date = @pokemon.pokeball.caught_on %>
+            <% loc  = @pokemon.pokeball.location %>
+            <div class="pokemon-card__meta">
+              Caught at <%= date ? l(date) : "—" %> in <%= loc.presence || "—" %><br>
+              Trainer: <%= @pokemon.trainer&.name || "–" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Formular / Status -->
+    <aside class="pokemon-show__right">
+      <% if @caught %>
+        <div class="catch-panel catch-panel--done">
+          <h2 class="catch-panel__title">Already caught</h2>
+          <% date = @pokemon.pokeball.caught_on %>
+          <% loc  = @pokemon.pokeball.location %>
+          <p class="catch-panel__text">
+            At <%= date ? l(date) : "—" %> in <%= loc.presence || "—" %><br>
+            Trainer: <strong><%= @pokemon.trainer&.name || "–" %></strong>
+          </p>
+          <p class="catch-panel__hint">The Pokémon is in a Pokéball.</p>
+        </div>
+      <% else %>
+        <div class="catch-panel">
+          <h2 class="catch-panel__title">Catch</h2>
+
+          <%= simple_form_for [@pokemon, @pokeball], html: { class: "catch-form" } do |f| %>
+            <%= f.association :trainer,
+                  collection: @trainers,
+                  prompt: "Choose trainer",
+                  label: "Trainer" %>
+
+            <%= f.input :location,
+                  label: "Location",
+                  placeholder: "example: Viridian Forest",
+                  required: true %>
+
+            <%= f.input :caught_on,
+                  as: :date,
+                  label: "Date",
+                  input_html: { value: Date.current } %>
+
+            <% if @pokeball.errors.any? %>
+              <ul class="catch-form__errors">
+                <% @pokeball.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
+            <% end %>
+
+            <%= f.button :submit, "Catch", class: "btn btn-primary btn--block" %>
+          <% end %>
+        </div>
+      <% end %>
+    </aside>
+  </div>
+</div>

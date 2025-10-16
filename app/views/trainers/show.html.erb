@@ -1,0 +1,73 @@
+<div class="trainer-show">
+  <div class="trainer-show__actions">
+    <%= link_to "Back Trainers", trainers_path, class: "btn btn-primary" %>
+    <%= link_to "Back to Pokedex", root_path, class: "btn btn-primary"  %>
+  </div>
+
+  <div class="trainer-show__layout">
+    <!-- Sidebar: Trainer links -->
+    <aside class="trainer-show__sidebar">
+      <div class="trainer-card trainer-card--panel">
+        <div class="trainer-card__header">
+          <% if @trainer.photo.attached? %>
+            <%= cl_image_tag(
+                  @trainer.photo.key,
+                  width: 160, height: 160, crop: :fill, gravity: :auto,
+                  fetch_format: :auto, quality: "auto",
+                  class: "trainer-card__img", alt: @trainer.name
+                ) %>
+          <% else %>
+            <div class="trainer-card__img trainer-card__img--placeholder" aria-hidden="true">👤</div>
+          <% end %>
+        </div>
+
+        <div class="trainer-card__body">
+          <h1 class="trainer-card__name"><%= @trainer.name %></h1>
+          <p class="trainer-card__meta"><%= @trainer.age %> Jahre</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content: Pokémon rechts im Grid -->
+    <main class="trainer-show__content">
+      <h2 class="trainer-show__title">Pokémon of <%= @trainer.name %></h2>
+
+      <ul class="pokedex__grid">
+        <% @pokemons.each do |pokemon| %>
+          <li class="pokedex-card">
+            <div class="pokedex-card__row">
+              <%= link_to pokemon_path(pokemon), class: "pokedex-card__link" do %>
+                <% if pokemon.photo.attached? %>
+                  <%= cl_image_tag(
+                        pokemon.photo.key,
+                        width: 96, height: 96, crop: :fill, gravity: :auto,
+                        fetch_format: :auto, quality: "auto",
+                        class: "pokedex-card__img", alt: pokemon.name
+                      ) %>
+                <% else %>
+                  <div class="pokedex-card__img--placeholder" aria-hidden="true">❓</div>
+                <% end %>
+
+                <div>
+                  <p class="pokedex-card__name"><%= pokemon.name %></p>
+                  <small class="pokedex-card__type"><%= pokemon.element_type %></small>
+                </div>
+              <% end %>
+            </div>
+
+            <% if pokemon.pokeball %>
+              <div class="pokedex-card__actions">
+                <%= button_to "Release",
+                      trainer_pokeball_path(@trainer, pokemon.pokeball),
+                      method: :delete,
+                      data: { turbo_confirm: "Release #{pokemon.name}?" },
+                      class: "btn btn-danger" %>
+              </div>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+
+    </main>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="trainer-page">
+  <h1 class="trainer-page__title">Trainer</h1>
+
+  <ul class="trainer-grid">
+    <% @trainers.each do |trainer| %>
+      <li class="trainer-card">
+        <%= link_to trainer_path(trainer), class: "trainer-card trainer-card--link" do %>
+          <div class="trainer-card__header">
+            <% if trainer.photo.attached? %>
+              <%= cl_image_tag(
+                    trainer.photo.key,
+                    width: 120, height: 120, crop: :fill, gravity: :auto,
+                    fetch_format: :auto, quality: "auto",
+                    class: "trainer-card__img", alt: trainer.name
+                  ) %>
+            <% else %>
+              <div class="trainer-card__img trainer-card__img--placeholder" aria-hidden="true">👤</div>
+            <% end %>
+          </div>
+
+          <div class="trainer-card__body">
+            <p class="trainer-card__name"><%= trainer.name %></p>
+            <p class="trainer-card__meta"><%= trainer.age %> Years</p>
+          </div>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+
+  <p class="trainer-page__back">
+    <%= link_to "Back to Pokedex", root_path, class: "btn btn-primary" %>
+  </p>
+</div>
