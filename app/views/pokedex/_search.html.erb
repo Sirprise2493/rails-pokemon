@@ -1,0 +1,17 @@
+<div class="pokedex__actions">
+  <%= form_with url: root_path, method: :get, local: true, class: "pokedex-search" do %>
+    <input type="search"
+           name="q"
+           value="<%= params[:q] %>"
+           placeholder="Find Pokémon…"
+           list="pokemon-names"
+           class="pokedex-search__input" />
+    <button type="submit" class="btn btn-primary">Search</button>
+  <% end %>
+
+  <datalist id="pokemon-names">
+    <% @all_names.each do |name| %>
+      <option value="<%= name %>"></option>
+    <% end %>
+  </datalist>
+</div>

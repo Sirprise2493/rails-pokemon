@@ -1,0 +1,23 @@
+<!-- app/views/trainers/new.html.erb -->
+<div class="trainer-new">
+  <h1>Create new Trainer</h1>
+
+  <%= simple_form_for @trainer, html: { class: "trainer-form" } do |f| %>
+    <%= f.input :name, label: "Name" %>
+    <%= f.input :age,  as: :integer, label: "Age" %>
+
+    <%= f.input :photo,
+          as: :file,
+          label: "Photo",
+          input_html: {
+            direct_upload: true,   # Active Storage Direct Uploads
+            accept: "image/*"
+          },
+          hint: "Choose Photo (will be uploaded in Clodinary)" %>
+
+    <%= f.button :submit, "Create", class: "btn btn-primary" %>
+    <%= link_to "Cancel", trainers_path, class: "btn btn-danger" %>
+  <% end %>
+  <%= link_to "Trainer", trainers_path, class: "btn btn-primary my-4" %>
+  <%= link_to "Pokedex", root_path, class: "btn btn-primary my-4" %>
+</div>

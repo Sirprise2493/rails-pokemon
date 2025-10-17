@@ -1,0 +1,9 @@
+.pokedex {
+  &__actions { display:flex; gap:8px; align-items:center; margin-bottom:12px; }
+}
+.pokedex-search__input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  min-width: 240px;
+}

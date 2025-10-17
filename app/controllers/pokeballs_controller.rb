@@ -9,12 +9,31 @@ class PokeballsController < ApplicationController
 
   def create
     @pokemon  = Pokemon.find(params[:pokemon_id])
+
+    # Falls du has_one :pokeball nutzt und das Pokémon schon gefangen ist:
+    if @pokemon.pokeball&.persisted?
+      redirect_to pokemon_path(@pokemon), alert: "#{@pokemon.name} is already caught."
+      return
+    end
+
     @pokeball = @pokemon.build_pokeball(pokeball_params)
 
-    if @pokeball.save
-      redirect_to pokemon_path(@pokemon), notice: "#{@pokemon.name} was catched"
+    # 50/50 – benutze, was dir lieber ist:
+    caught = rand(2).zero?
+
+    if caught
+      if @pokeball.save
+        redirect_to pokemon_path(@pokemon), notice: "#{@pokemon.name} was caught!"
+      else
+        @trainers = Trainer.order(:name)
+        flash.now[:alert] = "Could not catch #{@pokemon.name}."
+        render "pokemons/show", status: :unprocessable_entity
+      end
     else
-      @trainers = Trainer.order(:name) # fürs Formular bei Fehlern
+      # Nicht gespeichert – Formular mit Fehlermeldung erneut zeigen
+      @pokeball.errors.add(:base, "#{@pokemon.name} escaped!")
+      @trainers = Trainer.order(:name)
+      flash.now[:alert] = "#{@pokemon.name} escaped!"
       render "pokemons/show", status: :unprocessable_entity
     end
   end
